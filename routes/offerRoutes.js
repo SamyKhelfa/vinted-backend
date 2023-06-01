@@ -39,7 +39,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/publish", isAuthenticated, async (req, res) => {
+router.post("/offer/publish", isAuthenticated, async (req, res) => {
   console.log("route: /offer/publish");
   console.log(req.body);
   try {
