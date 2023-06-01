@@ -6,17 +6,7 @@ const uid2 = require("uid2");
 
 const router = express.Router();
 
-const User = mongoose.model("User", {
-  email: String,
-  account: {
-    username: String,
-    avatar: Object,
-  },
-  newsletter: Boolean,
-  token: String,
-  hash: String,
-  salt: String,
-});
+const User = require("../models/user");
 
 router.post("/signup", async (req, res) => {
   console.log("route: /user/signup");

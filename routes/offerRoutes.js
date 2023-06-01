@@ -6,6 +6,9 @@ const router = express.Router();
 
 const token = "mySuperSecretToken";
 
+const Offer = require("../models/offer");
+const User = require("../models/user");
+
 const isAuthenticated = async (req, res, next) => {
   if (req.headers.authorization) {
     const user = await User.findOne({
@@ -36,32 +39,14 @@ router.get("/", async (req, res) => {
   }
 });
 
-const Offer = mongoose.model("Offer", {
-  product_name: String,
-  product_description: String,
-  product_price: Number,
-  product_details: {
-    marque: String,
-    taille: Number,
-    etat: String,
-    couleur: String,
-    emplacement: String,
-  },
-  product_image: Object,
-  owner: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
-});
-
 router.post("/publish", isAuthenticated, async (req, res) => {
   console.log("route: /offer/publish");
   console.log(req.body);
   try {
     const newOffer = new Offer({
-      product_name: req.body.product_name,
-      product_description: req.body.product_description,
-      product_price: req.body.product_price,
+      product_name: req.body.name,
+      product_description: req.body.description,
+      product_price: req.body.price,
       product_details: [
         req.body.marque,
         req.body.taille,
@@ -69,7 +54,7 @@ router.post("/publish", isAuthenticated, async (req, res) => {
         req.body.couleur,
         req.body.emplacement,
       ],
-      product_image: req.body.product_image,
+      product_image: req.body.image,
     });
 
     await newOffer.save();
