@@ -57,6 +57,13 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       product_image: req.body.image,
     });
 
+    // On positionne le middleware `fileUpload` dans la route `/upload`
+    app.post("/upload", fileUpload(), (req, res) => {
+      // on récupère les fichiers reçus et on les affiche avec un `console.log`
+      console.log(req.files);
+      res.send("OK");
+    });
+
     await newOffer.save();
     res.status(201).json(newOffer);
     console.log(newOffer);
