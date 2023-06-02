@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const axios = require("axios");
-
+const fileUpload = require("express-fileupload");
 const router = express.Router();
 
 const token = "mySuperSecretToken";
@@ -58,11 +58,6 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
     });
 
     // On positionne le middleware `fileUpload` dans la route `/upload`
-    app.post("/upload", fileUpload(), (req, res) => {
-      // on récupère les fichiers reçus et on les affiche avec un `console.log`
-      console.log(req.files);
-      res.send("OK");
-    });
 
     await newOffer.save();
     res.status(201).json(newOffer);
@@ -71,6 +66,20 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
     console.log(error);
   }
+});
+
+router.post("/upload", fileUpload(), async (req, res) => {
+  try {
+    const pictureToUpload = req.files.picture;
+    const result = await cloundinary.uploader.upload(
+      convertToBase64(pictureToUpload)
+    );
+    return res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+  console.log(req.files);
+  res.send("OK");
 });
 
 module.exports = router;
